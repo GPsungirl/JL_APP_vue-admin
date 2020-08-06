@@ -1,7 +1,7 @@
 
 //重构数据====树结构
 function designData_tree(menuList) {
-  
+
   //深克隆
   let cloneData = JSON.parse(JSON.stringify(menuList))
   for(let i = 0; i< cloneData.length; i++){
@@ -18,14 +18,14 @@ function designData_tree(menuList) {
 
 }
 // 修正数据
-function modifyData(data) {  
-  
+function modifyData(data) {
+
   for (let i = 0; i < data.length; i++) {
     //父级
     let item = data[i];
     if (item.children) {
       // 父级 path
-      
+
       // alwaysShow: true
       let _index = item.path.indexOf('/');
       if( _index > -1){
@@ -41,7 +41,7 @@ function modifyData(data) {
       if (item.hasOwnProperty('children')) {
         //注意 children是数组
         for (let i = 0; i < item.children.length; i++) {
-          
+
           // meta
           item['children'][i]['meta'] = {
             title: item.children[i].menu_name
@@ -59,5 +59,6 @@ function modifyData(data) {
 export default {
   designData_tree
 }
+
 
 

@@ -118,15 +118,21 @@ const fya_routerMap = {
   agentAccount: () => import('@/views/agentAccount/agentAccount'), //上传机构发票
   manageAreaAgent: () => import('@/views/manageAreaAgent/manageAreaAgent'), //区域机构管理
 
-  // 机构管理      mechanism
-  agentCheck: () => import('@/views/agentCheck/agentCheck'), //机构审核
-  agentDetails: () => import('@/views/agentDetails/agentDetails'), //机构列表
+  // **机构管理      mechanism
+  agentCheck: () => import('@/views/agentCheck/agentCheck'), //**机构审核
+  agentDetails: () => import('@/views/agentDetails/agentDetails'), //**机构列表
+
+
   subordinateAgent: () => import('@/views/subordinateAgent/subordinateAgent'), // 机构下属查询
   travelerCheck: () => import('@/views/travelerCheck/travelerCheck'), // 角落向导审核
 
-  // 财务管理       finance
+  // **财务管理       finance
   virtualProfit: () => import('@/views/virtualProfit/virtualProfit'), //贝壳收益
-  accountProfit: () => import('@/views/accountProfit/accountProfit'), // 其他收益
+  accountProfit: () => import('@/views/accountProfit/accountProfit'), // 出行收益
+  memberFee: () => import('@/views/memberFee/memberFee'),//会员费收益
+  recharge: () => import('@/views/recharge/recharge'),//充值收益
+  proceedsCash: () => import('@/views/proceedsCash/proceedsCash'),//收益提现
+
   agentAccountExamine: () => import('@/views/agentAccountExamine/agentAccountExamine'), //机构受益划拨审核
   agentAccountRecord: () => import('@/views/agentAccountRecord/agentAccountRecord'), //机构受益划拨记录
   withdraw: () => import('@/views/withdraw/withdraw'), //向导提现
@@ -134,20 +140,29 @@ const fya_routerMap = {
   rechargeCheckList: () => import('@/views/rechargeCheckList/rechargeCheckList'), //机构充值审核
   rechargeRecordList: () => import('@/views/rechargeRecordList/rechargeRecordList'), //机构充值记录
 
+  // **运营管理  operate
+
+  atmosphere: () => import('@/views/atmosphere/atmosphere'), // 氛围号管理
+  identityInfoManage: () => import('@/views/identityInfoManage/identityInfoManage'),// 认证管理
+  customPhotoCheck: () => import('@/views/customPhotoCheck/customPhotoCheck'),// 照片审核
+  activitys: () => import('@/views/activitys/activitys'), // 活动管理
+
   // 向导管理       guide
   travelerInfo: () => import('@/views/travelerInfo/travelerInfo'), //向导查询,
-  travelRecord: () => import('@/views/travelRecord/travelRecord'), // 工作记录
+
   travelOrder: () => import('@/views/travelOrder/travelOrder'), // 出行记录
   videoExamine: () => import('@/views/videoExamine/videoExamine'), // 录制视频审核
   videoChoice: () => import('@/views/videoChoice/videoChoice'), // 工作间视频设置
   customerService: () => import('@/views/customerService/customerService'), //客服管理
-  InvitationOnlineRecord: () => import('@/views/InvitationOnlineRecord/InvitationOnlineRecord'), //邀约上线记录
-  // 客户管理     customer
+
+  // **用户管理     customer
   customInfo: () => import('@/views/customInfo/customInfo'), //用户查询
   consumeOrderUnion: () => import('@/views/consumeOrderUnion/consumeOrderUnion'), //消费记录
   customOrder: () => import('@/views/customOrder/customOrder'), //出行记录
+  travelRecord: () => import('@/views/travelRecord/travelRecord'), // 直播记录
   virtualConsumeRecord: () => import('@/views/virtualConsumeRecord/virtualConsumeRecord'), //贝壳消费记录
   chatInfoRecord: () => import('@/views/chatInfoRecord/chatInfoRecord'), // 即时聊天记录
+  InvitationOnlineRecord: () => import('@/views/InvitationOnlineRecord/InvitationOnlineRecord'), //邀约上线记录
   // 系统设置     system
   sysRole: () => import('@/views/sysRole/sysRole'), // 角色管理
   sysUser: () => import('@/views/sysUser/sysUser'), // 用户管理

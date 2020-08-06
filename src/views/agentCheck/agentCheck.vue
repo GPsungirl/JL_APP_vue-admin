@@ -5,8 +5,8 @@
         <div class="query_fields pad_b_no">
             <el-form :inline="true" :model="queryForm" ref="queryForm" size="mini" class="demo-form-inline">
                 <!-- 业务地区 -->
-                <el-form-item label="业务地区" >
-                    <!-- 省 -->
+                <!-- <el-form-item label="业务地区" >
+
                     <el-col :span="12">
                         <el-form-item prop="province_code">
                             <el-select v-model="queryForm.province_code"
@@ -21,7 +21,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <!-- 市 -->
+
                     <el-col :span="12">
                         <el-form-item prop="city_code">
                             <el-select v-model="queryForm.city_code"
@@ -36,21 +36,29 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                </el-form-item>
+                </el-form-item> -->
                 <!-- 合同编号 -->
-                <el-form-item label="合同编号" prop="contract_no">
+                <!-- <el-form-item label="合同编号" prop="contract_no">
                     <el-input v-model="queryForm.contract_no" placeholder="请输入合同编号" class="wid_140"></el-input>
+                </el-form-item> -->
+                <!-- 联系人 -->
+                <el-form-item label="联系人" prop="charger">
+                    <el-input v-model="queryForm.charger" placeholder="联系人" class="wid_140"></el-input>
+                </el-form-item>
+                <!-- 联系电话 -->
+                <el-form-item label="联系电话" prop="phone">
+                    <el-input v-model="queryForm.phone" placeholder="机构名称" class="wid_140"></el-input>
                 </el-form-item>
                 <!-- 机构名称 -->
                 <el-form-item label="机构名称" prop="agent_name">
-                    <el-input v-model="queryForm.agent_name" placeholder="请输入机构名称" class="wid_140"></el-input>
+                    <el-input v-model="queryForm.agent_name" placeholder="机构名称" class="wid_140"></el-input>
                 </el-form-item>
                 <!-- 查询 -->
                 <el-form-item>
                     <el-button type="primary" size='mini' @click="queryData">查询</el-button>
                     <el-button type="success" size='mini' @click="resetData('queryForm')">重置</el-button>
-                    <!-- 只有招商中心 区域经理  有权限 新增 市级机构 -->
-                    <el-button v-if="roleId == 4 || roleId == 5" type="primary" size='mini' @click="handle_add">新增机构</el-button>
+                    <!-- 新增机构：超管 运营 -->
+                    <el-button v-if="roleId == 1 || roleId == 7" type="primary" size='mini' @click="handle_add">新增机构</el-button>
                     <el-button type="primary" size='mini' @click="handle_refresh">刷新</el-button>
 
                 </el-form-item>
@@ -64,12 +72,15 @@
             <el-table :data="tableData" v-loading="tableLoading" border stripe style="width: 100%">
                 <el-table-column prop="agent_name" label="机构名称" width="" >
                 </el-table-column>
-                <el-table-column prop="charger" label="联系人" width="70px">
+                <el-table-column prop="charger" label="联系人" width="">
                 </el-table-column>
-                <el-table-column prop="phone" label="联系电话" width="">
+                <el-table-column prop="account_user" label="开户名" width="">
                 </el-table-column>
+                <el-table-column prop="account_bank" label="开户行" width="">
+                </el-table-column>
+
                 <!-- 业务地区：省+市 -->
-                <el-table-column prop="" label="业务地区" width="210">
+                <!-- <el-table-column prop="" label="业务地区" width="210">
                     <template slot-scope="scope">
                         {{ scope.row.province + scope.row.city }}
                     </template>
@@ -85,8 +96,8 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="contract_no" label="合同编号" width="120">
-                </el-table-column>
-                <el-table-column v-if="roleId == 7" prop="" label="审核原因" width="">
+                </el-table-column> -->
+                <el-table-column  prop="" label="审核原因" width="">
                     <template slot-scope="scope">
                         <span v-if="scope.row.check_cause == 0">新增机构</span>
                         <span v-if="scope.row.check_cause == 1">修改信息</span>
@@ -95,9 +106,9 @@
                 <el-table-column prop="" label="操作" width="">
                 <template slot-scope="scope">
 
-                    <el-button v-if="roleId != 7" @click="handle_detail(scope.row)" type="text" size="small">详情</el-button>
-                    <!-- 只有运营管理才有权限：审核 -->
-                    <el-button v-if="roleId == 7" @click="handle_detail_check(scope.row)" type="text" size="small">详情并审核</el-button>
+                    <el-button  @click="handle_detail(scope.row)" type="text" size="small">详情</el-button>
+                    <!-- 只有运营 管理才有权限：审核 -->
+                    <el-button v-if="roleId == 1 || roleId == 7" @click="handle_detail_check(scope.row)" type="text" size="small">审核</el-button>
 
                 </template>
                 </el-table-column>
@@ -137,7 +148,7 @@
                 <el-form-item label="负责人" prop="charger" label-width="68px">
                     <el-input v-model="add_form.charger" placeholder="负责人" class="wid_180"></el-input>
                 </el-form-item>
-                <el-form-item label="业务地区" required class="marg_r0">
+                <!-- <el-form-item label="业务地区" required class="marg_r0">
                     <el-col :span="11">
                         <el-form-item prop="province_code" class="marg_b0">
                             <el-select v-model="add_form.province_code"
@@ -166,25 +177,25 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="联系地址" prop="address">
                     <el-input v-model="add_form.address" placeholder="联系地址" class="wid_180"></el-input>
                 </el-form-item>
-                <el-form-item label="贝壳分成" prop="virtual_rate">
+                <!-- <el-form-item label="贝壳分成" prop="virtual_rate">
                     <el-input v-model.number="add_form.virtual_rate" placeholder="贝壳分成" class="wid_181"></el-input>%
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="联系电话" prop="phone" >
                     <el-input v-model="add_form.phone" placeholder="联系电话" class="wid_180"></el-input>
                 </el-form-item>
-                <el-form-item label="出行分成" prop="account_rate">
+                <!-- <el-form-item label="出行分成" prop="account_rate">
                     <el-input v-model.number="add_form.account_rate" placeholder="出行分成" class="wid_181"></el-input>%
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="联系邮箱" prop="email">
                     <el-input v-model="add_form.email" placeholder="联系邮箱" class="wid_180"></el-input>
                 </el-form-item>
-                <el-form-item label="合同编号" prop="contract_no">
+                <!-- <el-form-item label="合同编号" prop="contract_no">
                     <el-input v-model="add_form.contract_no" placeholder="合同编号" class="wid_180"></el-input>
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
             <!-- 开户信息 -->
             <el-form :inline="true" :model="add_form_bank" :rules="add_bank_rules" ref="add_bank_form" class="demo-form-inline valid_form">
@@ -244,7 +255,7 @@
         </el-dialog>
         <!-- M4 dialog 详情 -->
         <el-dialog
-            title="机构详情"
+            :title="'机构详情:'+detail_agentName"
             :visible.sync="detail_dialogVisible"
             width="50%"
             center
@@ -262,11 +273,23 @@
                 <el-form-item label="机构名称" prop="agent_name">
                     <el-input v-model="detail_form.agent_name" placeholder="审批人" class="wid_180"></el-input>
                 </el-form-item>
-                <el-form-item label="机构编号" prop="agentid">
+                <!-- <el-form-item label="机构编号" prop="agentid">
                     <el-input v-model="detail_form.agentid" placeholder="" class="wid_180"></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="负责人" prop="charger" label-width="68px">
                     <el-input v-model="detail_form.charger" placeholder="负责人" class="wid_180"></el-input>
+                </el-form-item>
+                <el-form-item label="联系地址" prop="address">
+                    <el-input v-model="detail_form.address" placeholder="联系地址" class="wid_180"></el-input>
+                </el-form-item>
+                 <el-form-item label="联系电话" prop="phone" >
+                    <el-input v-model="detail_form.phone" placeholder="联系电话" class="wid_180"></el-input>
+                </el-form-item>
+                <el-form-item label="联系邮箱" prop="email" >
+                    <el-input v-model="detail_form.email" placeholder="联系邮箱" class="wid_180"></el-input>
+                </el-form-item>
+                <!-- <el-form-item label="贝壳分成" prop="virtual_rate">
+                    <el-input v-model="detail_form.virtual_rate" placeholder="贝壳分成" class="wid_181"></el-input>%
                 </el-form-item>
                 <el-form-item label="业务地区"  class="marg_r0">
                     <el-col :span="11">
@@ -298,24 +321,12 @@
                         </el-form-item>
                     </el-col>
                 </el-form-item>
-                <el-form-item label="联系地址" prop="address">
-                    <el-input v-model="detail_form.address" placeholder="联系地址" class="wid_180"></el-input>
-                </el-form-item>
-                <el-form-item label="贝壳分成" prop="virtual_rate">
-                    <el-input v-model="detail_form.virtual_rate" placeholder="贝壳分成" class="wid_181"></el-input>%
-                </el-form-item>
-                <el-form-item label="联系电话" prop="phone" >
-                    <el-input v-model="detail_form.phone" placeholder="联系电话" class="wid_180"></el-input>
-                </el-form-item>
                 <el-form-item label="出行分成" prop="account_rate">
                     <el-input v-model="detail_form.account_rate" placeholder="出行分成" class="wid_181"></el-input>%
                 </el-form-item>
-                <el-form-item label="联系邮箱" prop="email" >
-                    <el-input v-model="detail_form.email" placeholder="联系邮箱" class="wid_180"></el-input>
-                </el-form-item>
                 <el-form-item label="合同编号" prop="contract_no">
                     <el-input v-model="detail_form.contract_no" placeholder="合同编号" class="wid_180"></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <div></div>
                  <el-form-item label="开户名" prop="account_user" label-width="68px">
                     <el-input v-model="detail_form.account_user" placeholder="开户名" class="wid_180"></el-input>
@@ -371,9 +382,9 @@
                 <el-button @click="detail_dialogVisible = false" size="mini">关 闭</el-button>
             </span>
         </el-dialog>
-        <!-- M5 dialog 详情并审核 -->
+        <!-- M5 dialog 审核 -->
         <el-dialog
-            title="机构审核"
+            :title="'机构审核:'+detail_agentName"
             :visible.sync="detail_check_dialogVisible"
             width="50%"
             center
@@ -391,13 +402,22 @@
                 <el-form-item label="机构名称" prop="agent_name">
                     <el-input v-model="detail_check_form.agent_name" placeholder="审批人" class="wid_180"></el-input>
                 </el-form-item>
-                <el-form-item label="机构编号" prop="agentid">
+                <!-- <el-form-item label="机构编号" prop="agentid">
                     <el-input v-model="detail_check_form.agentid" placeholder="" class="wid_180"></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="负责人" prop="charger" label-width="68px">
                     <el-input v-model="detail_check_form.charger" placeholder="负责人" class="wid_180"></el-input>
                 </el-form-item>
-                <el-form-item label="业务地区"  class="marg_r0">
+                 <el-form-item label="联系地址" prop="address">
+                    <el-input v-model="detail_check_form.address" placeholder="联系地址" class="wid_180"></el-input>
+                </el-form-item>
+                 <el-form-item label="联系电话" prop="phone" >
+                    <el-input v-model="detail_check_form.phone" placeholder="联系电话" class="wid_180"></el-input>
+                </el-form-item>
+                 <el-form-item label="联系邮箱" prop="email">
+                    <el-input v-model="detail_check_form.email" placeholder="联系邮箱" class="wid_180"></el-input>
+                </el-form-item>
+                <!-- <el-form-item label="业务地区"  class="marg_r0">
                     <el-col :span="11">
                         <el-form-item prop="province_code" class="marg_b0">
                             <el-select v-model="detail_check_form.province_code"
@@ -427,24 +447,15 @@
                         </el-form-item>
                     </el-col>
                 </el-form-item>
-                <el-form-item label="联系地址" prop="address">
-                    <el-input v-model="detail_check_form.address" placeholder="联系地址" class="wid_180"></el-input>
-                </el-form-item>
                 <el-form-item label="贝壳分成" prop="virtual_rate">
                     <el-input v-model="detail_check_form.virtual_rate" placeholder="贝壳分成" class="wid_181"></el-input>%
-                </el-form-item>
-                <el-form-item label="联系电话" prop="phone" >
-                    <el-input v-model="detail_check_form.phone" placeholder="联系电话" class="wid_180"></el-input>
                 </el-form-item>
                 <el-form-item label="出行分成" prop="account_rate">
                     <el-input v-model="detail_check_form.account_rate" placeholder="出行分成" class="wid_181"></el-input>%
                 </el-form-item>
-                <el-form-item label="联系邮箱" prop="email">
-                    <el-input v-model="detail_check_form.email" placeholder="联系邮箱" class="wid_180"></el-input>
-                </el-form-item>
                 <el-form-item label="合同编号" prop="contract_no">
                     <el-input v-model="detail_check_form.contract_no" placeholder="合同编号" class="wid_180"></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <div></div>
                  <el-form-item label="开户名" prop="account_user" label-width="68px">
                     <el-input v-model="detail_check_form.account_user" placeholder="开户名" class="wid_180"></el-input>
@@ -526,9 +537,9 @@
                             :label="item.id">{{ item.txt }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="拒绝原因" prop="check_remark" label-width="75px">
+                <!-- <el-form-item label="拒绝原因" prop="check_remark" label-width="75px">
                     <el-input type="textarea" v-model="detail_check_form.check_remark" ></el-input>
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="detail_check_dialogVisible = false" size="mini">关 闭</el-button>
@@ -586,10 +597,12 @@ export default {
                 regions:'',
                 cities: [],
 
-                province_code: '',
-                city_code:'',
+                // province_code: '',
+                // city_code:'',
                 agent_name:'',
-                contract_no:'',
+                charger:'',
+                phone:'',
+                // contract_no:'',
 
             },
             // dialog add
@@ -660,34 +673,34 @@ export default {
                     { required: true, message: '请输入负责人', trigger: 'blur' }
                 ],
                 // 业务地区
-                province_code:[
-                    { required: true, message: '请选择业务地区', trigger: 'change' }
-                ],
-                city_code:[
-                    { required: true, message: '请选择业务地区', trigger: 'change' }
-                ],
+                // province_code:[
+                //     { required: true, message: '请选择业务地区', trigger: 'change' }
+                // ],
+                // city_code:[
+                //     { required: true, message: '请选择业务地区', trigger: 'change' }
+                // ],
                 // 联系地址
                 address:[
                     { required: true, message: '请输入地址', trigger: 'blur' }
                 ],
                 // 贝壳分成
-                virtual_rate:[
-                    { required: true, validator:validRate, trigger: 'blur' },
-                    { type: 'number', message: '贝壳分成必须为数字'}
-                ],
+                // virtual_rate:[
+                //     { required: true, validator:validRate, trigger: 'blur' },
+                //     { type: 'number', message: '贝壳分成必须为数字'}
+                // ],
                 // 出行分成
-                account_rate:[
-                    { required: true, validator:validRate, trigger: 'blur' },
-                    { type: 'number', message: '出行分成必须为数字'}
-                ],
+                // account_rate:[
+                //     { required: true, validator:validRate, trigger: 'blur' },
+                //     { type: 'number', message: '出行分成必须为数字'}
+                // ],
                 // 邮箱
                 email:[
                     { required: true, message: '请输入邮箱', trigger: 'blur' }
                 ],
                 // 合同编号
-                 contract_no:[
-                    { required: true, message: '请输入合同编号', trigger: 'blur' }
-                ],
+                //  contract_no:[
+                //     { required: true, message: '请输入合同编号', trigger: 'blur' }
+                // ],
                 // 电话
                 phone:[
                     { required: true, trigger: 'blur', validator: validPhone }
@@ -751,8 +764,10 @@ export default {
                 account_province_code:'',
                 account_city_code:'',
             },
+            detail_agentName:'',
             // 详情并审核
             detail_check_form:{
+
                 regions:[],
                 cities:[],
                 // 机构编号
@@ -815,9 +830,9 @@ export default {
                 agent_check:[
                     { required: true, message: '请选择审核状态', trigger: 'change' }
                 ],
-                check_remark:[
-                    { required: true, message: '请输入审核说明', trigger: 'blur' }
-                ]
+                // check_remark:[
+                //     { required: true, message: '请输入审核说明', trigger: 'blur' }
+                // ]
             },
         }
     },
@@ -873,13 +888,15 @@ export default {
                     // 私有
                     // 机构编号 省编号 市编号 合同编号
                     agent_name:this.queryForm.agent_name,
-                    province_code:this.queryForm.province_code,
-                    city_code:this.queryForm.city_code,
-                    contract_no:this.queryForm.contract_no,
+                    charger:this.queryForm.charger,
+                    phone:this.queryForm.phone,
+                    // province_code:this.queryForm.province_code,
+                    // city_code:this.queryForm.city_code,
+                    // contract_no:this.queryForm.contract_no,
                }
             }
             this.tableLoading = true
-            this.$http.post(`${ commonUrl.baseUrl }/agent/agentCheckList`, param).then(res=>{
+            this.$http.post(`${ commonUrl.baseUrl }/agent/agentWaitCheckList`, param).then(res=>{
                 if(res.data.code == '0000'){
                     console.log(res)
                     this.tableData = res.data.data.agentList
@@ -908,6 +925,7 @@ export default {
         handle_detail(row){
             this.detail_dialogVisible = true
             this.detail_loading = true
+            this.detail_agentName = row.agent_name;
             this.$http.post(`${ commonUrl.baseUrl }/agent/selectAgentInfo`, {data:{agentid:row.agentid}}).then(res=>{
                 if(res.data.code == '0000'){
 
@@ -919,23 +937,23 @@ export default {
                     // 负责人
                     this.detail_form.charger = result.charger
                     // 业务地区
-                    this.detail_form.province_code = result.province_code
+                    //this.detail_form.province_code = result.province_code
                     // 根据省查询所有市
-                    this.queryCity(result.province, 'detail_form')
+                    //this.queryCity(result.province, 'detail_form')
 
-                    this.detail_form.city_code = result.city_code
+                    //this.detail_form.city_code = result.city_code
                     // 联系地址
                     this.detail_form.address = result.address
                     // 贝壳分成
-                    this.detail_form.virtual_rate = result.virtual_rate
+                    //this.detail_form.virtual_rate = result.virtual_rate
                     // 出行分成
-                    this.detail_form.account_rate = result.account_rate
+                    //this.detail_form.account_rate = result.account_rate
                     // 电话
                     this.detail_form.phone = result.phone
                     // 邮箱
                     this.detail_form.email = result.email
                     // 合同编号
-                    this.detail_form.contract_no = result.contract_no
+                    //this.detail_form.contract_no = result.contract_no
                     // 开户行
                     this.detail_form.bank_code = result.bank_code
                     // 开户名
@@ -956,7 +974,9 @@ export default {
         handle_detail_check(row){
 
             this.detail_check_form.userid = row.userid
-
+            this.detail_agentName = row.agent_name;
+            // 根据审核原因显示审核的操作单选按钮
+            this.showAgentCheck(row.check_cause);
             this.detail_check_dialogVisible = true
             this.detail_check_loading = true
             this.$http.post(`${ commonUrl.baseUrl }/agent/selectAgentInfo`, {data:{agentid:row.agentid}}).then(res=>{
@@ -970,23 +990,23 @@ export default {
                     // 负责人
                     this.detail_check_form.charger = result.charger
                     // 业务地区
-                    this.detail_check_form.province_code = result.province_code
+                    //this.detail_check_form.province_code = result.province_code
                     // 根据省查询所有市
-                    this.queryCity(result.province, 'detail_check_form')
+                    //this.queryCity(result.province, 'detail_check_form')
 
-                    this.detail_check_form.city_code = result.city_code
+                    //this.detail_check_form.city_code = result.city_code
                     // 联系地址
                     this.detail_check_form.address = result.address
                     // 贝壳分成
-                    this.detail_check_form.virtual_rate = result.virtual_rate
+                    //this.detail_check_form.virtual_rate = result.virtual_rate
                     // 出行分成
-                    this.detail_check_form.account_rate = result.account_rate
+                    //this.detail_check_form.account_rate = result.account_rate
                     // 电话
                     this.detail_check_form.phone = result.phone
                     // 邮箱
                     this.detail_check_form.email = result.email
                     // 合同编号
-                    this.detail_check_form.contract_no = result.contract_no
+                    //this.detail_check_form.contract_no = result.contract_no
                     // 开户行
                     this.detail_check_form.bank_code = result.bank_code
                     // 开户名
@@ -1004,6 +1024,38 @@ export default {
                 }
             }).catch(err=>{})
         },
+        // 显示审核的单选项
+        showAgentCheck(flag){
+          // 0:新增 1：修改
+          if(flag == 0){
+            this.detail_check_form.agent_checks = [
+                    {
+                        id:2,
+                        txt:'审核通过'
+                    },
+                    {
+                        id:4,
+                        txt:'审核拒绝'
+                    },
+                ]
+          }else{
+            this.detail_check_form.agent_checks = [
+                    {
+                        id:2,
+                        txt:'审核通过'
+                    },
+                    {
+                        id:4,
+                        txt:'审核拒绝'
+                    },
+                    {
+                        id:5,
+                        txt:'修改审核拒绝'
+                    }
+                ]
+          }
+
+        },
         // 审核 按钮
         handle_check(){
             if(this.m_valid_addForm('detail_check_form')){
@@ -1016,11 +1068,11 @@ export default {
                         // 私参
                         agentid:this.detail_check_form.agentid,
                         agent_check:this.detail_check_form.agent_check,
-                        check_remark:this.detail_check_form.check_remark,
+                        // check_remark:this.detail_check_form.check_remark,
                     }
                 }
                 this.detail_check_loading = true
-                this.$http.post(`${ commonUrl.baseUrl}/agent/checkAgent`, param).then(res=>{
+                this.$http.post(`${ commonUrl.baseUrl}/agent/agentCheck`, param).then(res=>{
                     if(res.data.code == '0000'){
                         console.log(res)
                         this.detail_check_loading = false
@@ -1033,15 +1085,15 @@ export default {
         },
         // 选中审核状态
         selectedAgentCheck(e){
-            if(e == 2){ // 审核通过
-                this.detail_check_rules.check_remark = null
-                // 清空校验
-                //this.clearValid('detail_check_form')
-            }else{
-                this.detail_check_rules.check_remark = [
-                    { required: true, message: '请输入审核说明', trigger: 'blur' }
-                ]
-            }
+            // if(e == 2){ // 审核通过
+            //     this.detail_check_rules.check_remark = null
+            //     // 清空校验
+            //     //this.clearValid('detail_check_form')
+            // }else{
+            //     this.detail_check_rules.check_remark = [
+            //         { required: true, message: '请输入审核说明', trigger: 'blur' }
+            //     ]
+            // }
         },
         changeOption_bank(e){
 
@@ -1067,22 +1119,34 @@ export default {
                 if(res.data.code == '0000'){
                     this.add_loading = false
                     this.bankInfo = this.add_form_bank.bankInfo = res.data.data.bankList
+
+                    let arr = [];
+                    if(res.data.data.manageProvinceCodeList.length > 0){
+                        for(let item of res.data.data.manageProvinceCodeList){
+                            arr.push({
+                                adcode: item.province_code,
+                                province: provinces.province_list[item.province_code]
+                            })
+                        }
+                    }
+                    this.add_form.regions = arr;
+
                     // 组合省份
                     // 招商中心：查全部省份；区域经理查 管辖内省份
-                    if(this.roleId == 4){ // 区域经理
-                        let arr = [];
-                        if(res.data.data.manageProvinceCodeList.length > 0){
-                            for(let item of res.data.data.manageProvinceCodeList){
-                                arr.push({
-                                    adcode: item.province_code,
-                                    province: provinces.province_list[item.province_code]
-                                })
-                            }
-                        }
-                        this.add_form.regions = arr;
-                    }else if(this.roleId == 5){ // 招商中心
-                        this.add_form.regions = this.pre_regions
-                    }
+                    // if(this.roleId == 4){ // 区域经理
+                    //     let arr = [];
+                    //     if(res.data.data.manageProvinceCodeList.length > 0){
+                    //         for(let item of res.data.data.manageProvinceCodeList){
+                    //             arr.push({
+                    //                 adcode: item.province_code,
+                    //                 province: provinces.province_list[item.province_code]
+                    //             })
+                    //         }
+                    //     }
+                    //     this.add_form.regions = arr;
+                    // }else if(this.roleId == 5){ // 招商中心
+                    //     this.add_form.regions = this.pre_regions
+                    // }
 
 
                 }
@@ -1112,20 +1176,20 @@ export default {
                         account_no:this.add_form_bank.account_no,
 
 
-                        account_rate:this.add_form.account_rate,
+                        // account_rate:this.add_form.account_rate,
                         account_user:this.add_form_bank.account_user,
                         address:this.add_form.address,
                         agent_name:this.add_form.agent_name,
                         bank_code:this.add_form_bank.bank_code,
                         charger:this.add_form.charger,
-                        contract_no:this.add_form.contract_no,
+                        // contract_no:this.add_form.contract_no,
                         email:this.add_form.email,
                         phone:this.add_form.phone,
-                        province:this.add_form.province_param.txt,
-                        province_code:this.add_form.province_param.adcode,
-                        city:this.add_form.city_param.cityname,
-                        city_code:this.add_form.city_param.adcode,
-                        virtual_rate:this.add_form.virtual_rate,
+                        // province:this.add_form.province_param.txt,
+                        // province_code:this.add_form.province_param.adcode,
+                        // city:this.add_form.city_param.cityname,
+                        // city_code:this.add_form.city_param.adcode,
+                        // virtual_rate:this.add_form.virtual_rate,
 
                     }
                 }
@@ -1301,9 +1365,12 @@ export default {
             //this.add_form.regions = arr
             this.add_form_bank.regions=arr
             // 预存 省份
-            this.pre_regions = arr
+
+            this.add_form.regions = this.pre_regions = arr
+
             // 详情
             this.detail_form.regions = this.detail_form.account_regions = arr
+
             // 详情并审核
             this.detail_check_form.regions = this.detail_check_form.account_regions = arr
         },

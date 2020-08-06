@@ -103,14 +103,16 @@ export default {
         }
         this.loading = true
         const res = await this.$http.post(`${commonUrl.baseUrl}/web/login`, qs.stringify(param));
+        console.log(res)
+        debugger
         if(res.data.code == '0000'){
-          // console.log(res)
+
           // 存roleId
           this.$store.commit('user/SET_ROLEID', res.data.data.sysRole.id)
-          localStorage.setItem('pp_roleId',JSON.stringify(res.data.data.sysRole.id))
+          localStorage.setItem('pp_roleId',res.data.data.sysRole.id)
           // 存 招商中心编号 merchant_center_code
           this.$store.commit('user/SET_MERCHANT_CENTER_CODE', res.data.data.user.merchant_center_code)
-          localStorage.setItem('pp_merchant_center_code',JSON.stringify(res.data.data.user.merchant_center_code))
+          localStorage.setItem('pp_merchant_center_code',res.data.data.user.merchant_center_code)
           // 存roles  String:   res.data.data.sysRole.role_name
           //this.$store.commit('user/SET_ROLES', ['admin']) // 早期先写固定值，让后端写下，roles: ['admin']
           // 存 token
@@ -120,7 +122,7 @@ export default {
 
           // 存 userId
           this.$store.commit('user/SET_USERID', res.data.data.user.id)
-          localStorage.setItem('pp_userId',JSON.stringify(res.data.data.user.id))
+          localStorage.setItem('pp_userId',res.data.data.user.id)
 
           // 存 real_name
           this.$store.commit('user/SET_REALNAME', res.data.data.user.real_name)

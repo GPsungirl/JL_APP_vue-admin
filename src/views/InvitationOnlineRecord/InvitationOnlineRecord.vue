@@ -9,15 +9,15 @@
         <el-input v-model="queryForm.agent_name" placeholder="请输入所属机构" class="wid_140"></el-input>
       </el-form-item>
       <!-- 向导id -->
-      <el-form-item label="向导ID" prop="live_customid">
+      <!-- <el-form-item label="向导ID" prop="live_customid">
         <el-input v-model="queryForm.live_customid" placeholder="请输入向导ID" class="wid_140"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <!-- 向导姓名 -->
-      <el-form-item label="向导姓名" prop="name">
+      <!-- <el-form-item label="向导姓名" prop="name">
         <el-input v-model="queryForm.name" placeholder="请输入向导姓名" class="wid_140"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <!-- 用户ID -->
-      <el-form-item label="用户ID" prop="customid" label-width="68px">
+      <el-form-item label="发起用户ID" prop="customid" label-width="90px">
         <el-input v-model="queryForm.customid" placeholder="请输入上级ID" class="wid_140"></el-input>
       </el-form-item>
       <!-- 订单时间 -->
@@ -32,7 +32,7 @@
           </el-date-picker>
       </el-form-item>
       <!-- 预约时间 -->
-      <el-form-item label="预约时间" prop="reserveTime">
+      <!-- <el-form-item label="预约时间" prop="reserveTime">
           <el-date-picker
               v-model="queryForm.reserveTime"
               type="daterange"
@@ -41,7 +41,7 @@
               start-placeholder="开始时间"
               end-placeholder="结束时间">
           </el-date-picker>
-      </el-form-item>
+      </el-form-item> -->
       <!-- 查询 -->
       <el-form-item>
         <el-button type="primary" size='mini' @click="queryData">查询</el-button>
@@ -55,29 +55,32 @@
     <!-- 表格 -->
     <el-table :data="tableData" v-loading="tableLoading" border stripe style="width: 100%">
       <!-- 用户ID customid-->
-      <el-table-column prop="customid" label="用户ID" width="80">
+      <el-table-column prop="customid" label="发起用户ID" width="100">
       </el-table-column>
       <!-- 昵称 -->
       <el-table-column prop="nickname" label="昵称" width="80">
       </el-table-column>
       <!-- 向导ID 可查询向导详情 -->
-      <el-table-column prop="" label="向导ID" width="80">
+      <el-table-column prop="" label="用户ID" width="80">
           <template slot-scope="scope">
             <el-button @click="handle_detail(scope.row)" type="text" size="small">
               {{ scope.row.live_customid }}</el-button>
           </template>
       </el-table-column>
-      <el-table-column prop="name" label="向导姓名" width="80">
-      </el-table-column>
-      <el-table-column prop="agent_name" label="所属机构" width="">
-
+      <el-table-column prop="name" label="姓名" width="80">
       </el-table-column>
       <!-- 订单时间 -->
       <el-table-column prop="orderCreatetime" label="订单时间" width="160">
       </el-table-column>
+      <!-- 贝壳 -->
+      <el-table-column prop="amount" label="贝壳数" width="70">
+      </el-table-column>
+      <el-table-column prop="agent_name" label="所属机构" width="">
+      </el-table-column>
+
       <!-- 订单状态 -->
       <!-- 0下单 1订单完成  3支付成功 4订单确认 5订单取消 6订单取消已退款 7订单取消退款失败 8以评价  -->
-      <el-table-column prop="" label="订单状态" width="80">
+      <el-table-column prop="" label="订单状态" width="120">
         <template slot-scope="scope">
         <span v-if="scope.row.live_order_status == 0">下单</span>
         <span v-else-if="scope.row.live_order_status == 1">订单完成</span>
@@ -91,7 +94,7 @@
       </el-table-column>
       <!-- 拒绝类别 reject_type-->
       <!-- 0未拒绝 1直接拒绝 2未接单到时拒绝 3未完成清理 -->
-      <el-table-column prop="" label="拒绝类别" width="80">
+      <el-table-column prop="" label="拒绝类别" width="120">
         <template slot-scope="scope">
         <span v-if="scope.row.reject_type == 0">未拒绝</span>
         <span v-else-if="scope.row.reject_type == 1">直接拒绝</span>
@@ -100,11 +103,9 @@
         </template>
       </el-table-column>
       <!-- 预约时间 -->
-      <el-table-column prop="task_begin_time" label="预约时间" width="160">
+      <el-table-column prop="task_begin_time" label="预约时间" width="115" :show-overflow-tooltip="true">
       </el-table-column>
-      <!-- 贝壳 -->
-      <el-table-column prop="amount" label="贝壳" width="60">
-      </el-table-column>
+
 
 
     </el-table>
@@ -487,8 +488,8 @@ export default {
         .post(`${commonUrl.baseUrl}/liveOrderInfo/selectLiveOrderInfoList`, param)
         .then(res => {
           if (res.data.code == "0000") {
-            console.log(res);
-            debugger
+            // console.log(res);
+            // debugger
             this.tableData = res.data.data.liveOrderInfoList;
             // 分页总数
             this.pageTotal = res.data.data.page.pageTotal;

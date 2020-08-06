@@ -1,7 +1,7 @@
 <template>
   <div class="main_content">
     <el-row>
-      <el-col :span="8" :offset="4">
+      <!-- <el-col :span="8" :offset="4">
         <div class="grid-content bg-purple box_shadow">
           <p class="jl_layout_center">上月收益</p>
           <el-row style="margin-bottom:10px;margin-top:30px">
@@ -42,12 +42,26 @@
             </el-col>
           </el-row>
         </div>
-      </el-col>
+      </el-col> -->
       <!-- <el-col :span="8">
         <div class="grid-content bg-purple box_shadow">
           <p class="jl_layout_center">本月收益</p>
         </div>
       </el-col>-->
+       <p style="text-align:center">
+        <span>{{$store.getters.real_name}}</span>
+      </p>
+      <p style="text-align:center">欢迎登录角落运营管理系统</p>
+
+      <p style="text-align:center">{{ invite_code }}</p>
+
+      <el-form v-if="roleId == 6" class="creat_form">
+        <p style="text-align:center;color:lightcoral;font-size:14px;">邀请码使用后请及时刷新本页面！！</p>
+        <el-form-item>
+          <el-button v-if="showCreatBtn" type="success" size='mini' @click="creatAgentInviteCode">创建邀请码</el-button>
+          <el-button type="primary" size='mini' @click="handle_refresh">刷新</el-button>
+        </el-form-item>
+      </el-form>
     </el-row>
 
   </div>
@@ -75,6 +89,9 @@ export default {
         }
     }
     return {
+      showCreatBtn:false,
+      roleId:'',
+      invite_code:'',
       agent_name: "",
       agentid: "",
       // 昨日收益
@@ -87,7 +104,12 @@ export default {
   },
   created() {
     // 初始化数据
-    this.getEarnings()
+    this.roleId = this.$store.getters.roleId;
+    // this.getEarnings();
+    // 初始化数据:邀请码 只针对机构
+    if(this.$store.getters.roleId == 6){
+      this.queryInviteCode();
+    }
   },
   computed: {
     ...mapGetters([
@@ -97,6 +119,82 @@ export default {
   },
 
   methods: {
+    // 获取邀请码
+    creatAgentInviteCode() {
+
+      let param = {
+        data: {
+          signInUserId: this.$store.getters.userId,
+          signInRoleId: this.$store.getters.roleId
+        }
+      };
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      this.$http
+        .post(
+          `${commonUrl.baseUrl}/inviteCodeInfo/createInviteCode`,
+          param
+        )
+        .then(res => {
+          console.log(res)
+          if (res.data.code == "0000") {
+            loading.close()
+            // 获取邀请码
+            this.queryInviteCode();
+          } else {
+            this.m_message(res.data.msg, "warning");
+            // 关闭加载
+            loading.close()
+          }
+        })
+        .catch(err => {});
+    },
+    // 刷新按钮
+    handle_refresh(){
+      this.queryInviteCode();
+    },
+    // 查询邀请码 /inviteCodeInfo/creatAgentInviteCode
+    queryInviteCode(){
+       let param = {
+        data: {
+          signInUserId: this.$store.getters.userId,
+          signInRoleId: this.$store.getters.roleId,
+        }
+      };
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      this.$http
+        .post(
+          `${commonUrl.baseUrl}/inviteCodeInfo/getAgentInviteCode`,
+          param
+        )
+        .then(res => {
+          if (res.data.code == "0000") {
+            let codeid = res.data.data.inviteCode.invite_codeid;
+
+            if(codeid != ""){
+              this.invite_code = `机构邀请码：${ codeid }`
+            }else{
+              this.showCreatBtn = true;
+            }
+            loading.close()
+          } else {
+            //this.m_message(res.data.msg, "warning");
+            this.showCreatBtn = true;
+            // 关闭加载
+            loading.close()
+          }
+        })
+        .catch(err => {});
+    },
     // 获取昨日收益 上月收益
     getEarnings() {
       const loading = this.$loading({
@@ -234,5 +332,8 @@ export default {
 .box .myBtn {
   color: gray;
   background: gray;
+}
+.creat_form >>> .el-form-item__content{
+  text-align: center;
 }
 </style>

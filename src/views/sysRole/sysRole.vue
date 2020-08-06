@@ -5,7 +5,7 @@
   <!--module1 功能区域 -->
   <div class="query_field mar_b10">
     <el-row>
-      <el-button type="primary" size='mini' @click="handle_addUserPermisson">新增角色</el-button>
+      <!-- <el-button type="primary" size='mini' @click="handle_addUserPermisson">新增角色</el-button> -->
       <el-button type="primary" size='mini' @click="refreshData">刷新</el-button>
     </el-row>
   </div>

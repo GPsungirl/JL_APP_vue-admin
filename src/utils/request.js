@@ -45,6 +45,7 @@ service.interceptors.response.use(
     if (response.data.code === '0000') {
 
       const authorization = response.headers.authorization;  //令牌
+
       store.commit('user/SET_TOKEN', authorization) //请求用户信息
       setToken(authorization) // 存到cookie里面
       return response
@@ -83,7 +84,7 @@ service.interceptors.response.use(
   },
   error => {
     // console.log('err' + error)
-    // console.log(error.response)
+    
     //目前的token过期 以接口错误的时候 抛出来了，这里拦截
     if(error.response.data.code == 2000){
 

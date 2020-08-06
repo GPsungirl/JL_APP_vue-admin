@@ -12,7 +12,7 @@
           <el-input v-model="queryForm.customid" placeholder="请输入用户ID" class="wid_140"></el-input>
         </el-form-item>
         <!-- 客户类别 -->
-        <el-form-item label="客户类别" prop="custom_type">
+        <!-- <el-form-item label="客户类别" prop="custom_type">
           <el-select
             v-model="queryForm.custom_type"
             class="wid_140"
@@ -25,7 +25,7 @@
               :value=" item.id "
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 查询 -->
         <el-form-item>
           <el-button type="primary" size="mini" @click="queryData">查询</el-button>
@@ -54,15 +54,17 @@
             <span>{{scope.row.province + scope.row.city}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop label="客户类别" width>
+        <el-table-column prop="agent_name" label="所属机构" width></el-table-column>
+        <!-- 客户类别 0普通客户 1兼职向导人员 2全职向导人员 3角落客服 -->
+        <!-- <el-table-column prop label="客户类别" width>
           <template slot-scope="scope">
-            <!-- 客户类别 0普通客户 1兼职向导人员 2全职向导人员 3角落客服 -->
+
             <span v-if="scope.row.custom_type == 0">普通客户</span>
             <span v-else-if="scope.row.custom_type == 1">兼职向导</span>
             <span v-else-if="scope.row.custom_type == 2">全职向导</span>
             <span v-else-if="scope.row.custom_type == 3">角落客服</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop label="操作" width>
           <template slot-scope="scope">
             <el-button @click="handle_detail(scope.row)" type="text" size="small">聊天列表</el-button>

@@ -7,7 +7,7 @@
         :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
-        :unique-opened="true" 
+        :unique-opened="true"
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
         mode="vertical"
@@ -39,6 +39,9 @@ export default {
         return meta.activeMenu
       }
       return path
+    },
+    mounted(){
+      console.log(this.permission_routes)
     },
     showLogo() {
       return this.$store.state.settings.sidebarLogo

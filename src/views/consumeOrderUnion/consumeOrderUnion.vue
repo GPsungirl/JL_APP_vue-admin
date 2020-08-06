@@ -10,9 +10,9 @@
         class="demo-form-inline"
       >
         <!-- 昵称 -->
-        <el-form-item label="昵称" prop="nickname" label-width="68px">
+        <!-- <el-form-item label="昵称" prop="nickname" label-width="68px">
           <el-input v-model="queryForm.nickname" placeholder="请输入昵称" class="wid_140"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 用户ID customid-->
         <el-form-item label="用户ID" prop="customid" label-width="68px">
           <el-input v-model="queryForm.customid" placeholder="请输入用户ID" class="wid_140"></el-input>
@@ -66,7 +66,7 @@
           ></el-date-picker>
         </el-form-item>
         <!-- 流水类别 consume_type-->
-        <el-form-item label="支付类别" prop="consume_type">
+        <!-- <el-form-item label="支付类别" prop="consume_type">
           <el-select
             v-model="queryForm.consume_type"
             class="wid_140"
@@ -80,9 +80,9 @@
               :value=" item.id "
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 流水状态 consume_refund_status-->
-        <el-form-item label="支付状态" prop="consume_refund_status">
+        <!-- <el-form-item label="支付状态" prop="consume_refund_status">
           <el-select
             v-model="queryForm.consume_refund_status"
             class="wid_140"
@@ -95,12 +95,13 @@
               :value=" item.id "
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 查询 -->
         <el-form-item>
           <el-button type="primary" size="mini" @click="queryData">查询</el-button>
           <el-button type="success" size="mini" @click="resetData('queryForm')">重置</el-button>
           <el-button type="primary" size="mini" @click="handle_refresh">刷新</el-button>
+          <el-button type="primary" size="mini" @click="exportData('/consumeOrderUnion/consumeOrderUnionExport')">导出数据</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -111,13 +112,14 @@
         <el-table-column prop="customid" label="用户ID" width></el-table-column>
         <el-table-column prop="nickname" label="昵称" width></el-table-column>
         <el-table-column prop="money" label="消费金额(元)" width></el-table-column>
-        <el-table-column prop label="性别" width="50px">
+        <el-table-column prop="agent_name" label="所属机构" width></el-table-column>
+        <!-- <el-table-column prop label="性别" width="50px">
           <template slot-scope="scope">
             <span v-if="scope.row.sex == '1'">男</span>
             <span v-else-if="scope.row.sex == '2'">女</span>
           </template>
-        </el-table-column>
-        <el-table-column prop="phone" label="电话" width></el-table-column>
+        </el-table-column> -->
+        <el-table-column prop="phone" label="手机号" width></el-table-column>
         <!-- 消费用途 1订单支付 2充值 3会员-->
         <el-table-column prop label="消费用途" width>
           <template slot-scope="scope">
@@ -169,7 +171,7 @@
           </template>
         </el-table-column>
         <!-- 消费的订单编号 -->
-        <el-table-column prop="consume_no" label="订单编号" width="200px"></el-table-column>
+        <el-table-column prop="consume_no" label="订单编号" width="100" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <!-- 分页 -->
       <div class="block mar_t10">
@@ -186,7 +188,8 @@
 </template>
 <script>
 import commonUrl from "../../utils/common";
-
+import { getToken } from "../../utils/auth.js";
+import axios from "axios";
 export default {
   name: "consumeOrderUnion",
   data() {
@@ -375,6 +378,66 @@ export default {
         this.queryForm.consume_refund_statuss = this.queryForm.tui11;
         this.queryForm.consume_refund_status = 0;
       }
+    },
+     // 导出数据
+    exportData(url) {
+      const token = getToken();
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      axios({
+        method: "post",
+        url: `${commonUrl.baseUrl}${url}`,
+        // headers里面设置token
+        headers: {
+          Authorization: token
+        },
+        data: {
+          data: {
+            signInUserId: this.$store.getters.userId,
+            signInRoleId: this.$store.getters.roleId,
+            // pageNum: pageNum,
+            // pageSize: 10,
+            // 注册时间
+            startRegisteredTime: this.queryForm.startRegisteredTime,
+            endRegisteredTime: this.queryForm.endRegisteredTime,
+            // createtime: this.queryForm.createtime,
+            // 会员状态
+            memberType: this.queryForm.memberType,
+            // 会员充值时间
+            startMemberTime: this.queryForm.startMemberTime,
+            endMemberTime: this.queryForm.endMemberTime,
+            realname: this.queryForm.realname,
+            up_username: this.queryForm.up_username,
+            grand_username: this.queryForm.grand_username,
+            agent_name: this.queryForm.agent_name
+          }
+        },
+        // 二进制流文件，一定要设置成blob，默认是json
+        responseType: "blob"
+      })
+        .then(res => {
+          loading.close();
+          // console.log(res.headers['content-disposition'])
+          let fileName = res.headers["content-disposition"];
+
+          const link = document.createElement("a");
+          const blob = new Blob([res.data], { type: "text/csv" });
+
+          link.style.display = "none";
+          link.href = URL.createObjectURL(blob);
+
+          link.setAttribute("download", `${fileName}`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch(err => {
+          loading.close();
+        });
     },
     // 刷新 主列表
     handle_refresh() {
